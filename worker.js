@@ -1,9 +1,9 @@
 /**
- * Cloudflare Pages Function - Oil Price API Proxy
- * 
- * Route: /api
- * This replaces api.php for Cloudflare deployment.
- * Cloudflare Pages automatically maps functions/api.js → /api
+ * Cloudflare Worker - Oil Price API Proxy + Static Site
+ *
+ * Handles:
+ *   /api      → Proxy to Bangchak Oil Price API
+ *   /*        → Serve static files (index.html, index.css)
  */
 
 const BANGCHAK_API_URL = 'https://oil-price.bangchak.co.th/ApiOilPrice2/th';
@@ -14,13 +14,26 @@ const corsHeaders = {
     'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-// Handle all HTTP methods
-export async function onRequest(context) {
-    // Handle CORS preflight
-    if (context.request.method === 'OPTIONS') {
-        return new Response(null, { headers: corsHeaders });
-    }
+export default {
+    async fetch(request, env, ctx) {
+        const url = new URL(request.url);
 
+        // Handle CORS preflight
+        if (request.method === 'OPTIONS') {
+            return new Response(null, { headers: corsHeaders });
+        }
+
+        // API proxy route
+        if (url.pathname === '/api' || url.pathname === '/api.php') {
+            return handleApiRequest();
+        }
+
+        // Serve static assets (index.html, index.css, etc.)
+        return env.ASSETS.fetch(request);
+    },
+};
+
+async function handleApiRequest() {
     try {
         const response = await fetch(BANGCHAK_API_URL, {
             method: 'GET',
