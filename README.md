@@ -101,19 +101,19 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    Start([DOMContentLoaded]) --> Init[Invoke fetchOilPrices]
-    Init --> CheckEnv{Detect Hostname}
+    Start([DOMContentLoaded]) --> Init["Invoke fetchOilPrices"]
+    Init --> CheckEnv{"Detect Hostname"}
     
-    CheckEnv -->|localhost / 127.0.0.1| UsePHP["Set API_URL = 'api.php'"]
-    CheckEnv -->|Production Host| UseCF["Set API_URL = '/api'"]
+    CheckEnv -->|"localhost / 127.0.0.1"| UsePHP["Set API_URL = 'api.php'"]
+    CheckEnv -->|"Production Host"| UseCF["Set API_URL = '/api'"]
     
-    UsePHP --> CallAPI[Dispatch fetch request]
+    UsePHP --> CallAPI["Dispatch fetch request"]
     UseCF --> CallAPI
     
-    CallAPI --> CheckRes{Response OK?}
+    CallAPI --> CheckRes{"Response OK?"}
     
-    CheckRes -->|Failure / Network Error| HandleErr["renderError()<br/>Display error prompt + Retry button"]
-    CheckRes -->|Success (200)| ParseData["Extract payload & parse fuel list JSON"]
+    CheckRes -->|"Failure / Network Error"| HandleErr["renderError()<br/>Display error prompt + Retry button"]
+    CheckRes -->|"Success (200)"| ParseData["Extract payload & parse fuel list JSON"]
     
     ParseData --> InfoBar["renderInfoBar()<br/>Display announcement date & time"]
     ParseData --> Grouping["classifyOil()<br/>Inspect fuel category"]
@@ -126,9 +126,9 @@ flowchart TD
     Gasohol --> BuildCards
     Premium --> BuildCards
     
-    BuildCards --> CheckRemark{Remarks present?}
-    CheckRemark -->|Yes| AddRemark["Append remark notices"]
-    CheckRemark -->|No| ShowContent["Update main content container"]
+    BuildCards --> CheckRemark{"Remarks present?"}
+    CheckRemark -->|"Yes"| AddRemark["Append remark notices"]
+    CheckRemark -->|"No"| ShowContent["Update main content container"]
     AddRemark --> ShowContent
     
     ShowContent --> Done([Dashboard Ready])
